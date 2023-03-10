@@ -42,9 +42,20 @@ struct JsonHelper {
     static func decode(data: Data) -> [TrackDTO]? {
         let decoder = JSONDecoder() // création d'un décodeur
 
-        print(data)
+        //print(data)
 
         if let decoded = try? decoder.decode([TrackDTO].self, from: data) { // si on a réussit à décoder
+            return decoded
+        }
+        return nil
+    }
+    
+    static func decodeGames(data: Data) -> [Game]? {
+        let decoder = JSONDecoder() // création d'un décodeur
+
+        //print(data)
+
+        if let decoded = try? decoder.decode([Game].self, from: data) { // si on a réussit à décoder
             return decoded
         }
         return nil

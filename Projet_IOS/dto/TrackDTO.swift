@@ -62,8 +62,8 @@ class TrackDTO: Decodable{
 
         var trackViewModelArray : [TrackViewModel] = []
 
-        print("array")
-        print(dtoArray)
+        //print("array")
+        //print(dtoArray)
 
         for track in dtoArray{
             let trackId : Int = track.trackId ?? track.collectionId ?? 0

@@ -12,6 +12,7 @@ struct ContentView: View {
     
     @StateObject var gameList : GameList = GameList(gameList: [])
     
+    @StateObject var volunteerList : VolunteerList = VolunteerList(volunteerList: [])
     @StateObject var trackListViewModel = TrackListViewModel(trackModelList: TrackDTO.dtoToArray(dtoArray: JsonHelper.loadFromFile(name: "test", extensionName: "json") ?? []))
 
     var body: some View {
@@ -25,6 +26,11 @@ struct ContentView: View {
                 .tabItem {
                     Image(systemName: "gamecontroller.fill")
                     Text("Jeux")
+                }
+            VolunteerListView(volunteerList: volunteerList)
+                .tabItem {
+                    Image(systemName: "gamecontroller.fill")
+                    Text("Bénévoles")
                 }
             TrackListView(trackListViewModel: trackListViewModel)
                 .tabItem {

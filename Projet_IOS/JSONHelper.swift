@@ -60,7 +60,18 @@ struct JsonHelper {
         }
         return nil
     }
+    
+    static func decodeVolunteers(data: Data) -> [Volunteer]? {
+        let decoder = JSONDecoder() // création d'un décodeur
 
+        //print(data)
+
+        if let decoded = try? VolunteerDTO.dtoToArray(dtoArray: decoder.decode([VolunteerDTO].self, from: data)) { // si on a réussit à décoder
+            
+            return decoded
+        }
+        return nil
+    }
 
 
 

@@ -17,7 +17,7 @@ class Game: Decodable, ObservableObject, Hashable, Equatable {
     private var id : String
     @Published var name : String
     @Published var type : String
-    private var picture : String
+    @Published var picture : String
 
 
     init(id: String, name: String, type: String, picture: String) {

@@ -18,6 +18,14 @@ struct GameDetailView: View {
 
     var body: some View {
         Spacer()
+        AsyncImage(url: URL(string: game.picture),content: { image in
+            image.resizable()
+                 .frame(width: 350, height: 350)
+        },
+        placeholder: {
+            ProgressView()
+        })
+        
         HStack{
             Text("Nom du jeu: ")
             Spacer()

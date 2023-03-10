@@ -16,6 +16,23 @@ struct GameItemView: View{
     }
 
     var body: some View {
-        Text(game.name)
+        HStack{
+            Text(game.name)
+            Spacer()
+            AsyncImage(url: URL(string: game.picture),content: { image in
+                image.resizable()
+                     .frame(width: 80, height: 80)
+            },
+            placeholder: {
+                ProgressView()
+            })
+        }
+        
+    }
+}
+
+struct Previews_GameItemView_Previews: PreviewProvider {
+    static var previews: some View {
+        /*@START_MENU_TOKEN@*/Text("Hello, World!")/*@END_MENU_TOKEN@*/
     }
 }

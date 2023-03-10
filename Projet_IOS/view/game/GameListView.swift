@@ -19,35 +19,42 @@ struct GameListView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack{
-                List {
-                    ForEach(gameList.gameList, id: \.self) { game in
-                        NavigationLink(destination: GameDetailView(game: game)){
-                            GameItemView(game: game)
+        VStack{
+            if case .loading = gameList.state{
+                ProgressView()
+            }
+            else{
+                NavigationStack {
+                    VStack{
+                        List {
+                            ForEach(gameList.gameList, id: \.self) { game in
+                                NavigationLink(destination: GameDetailView(game: game)){
+                                    GameItemView(game: game)
+                                }
+                            }
+                            .onDelete {
+                                indexSet in
+                                gameList.gameList.remove(atOffsets: indexSet)
+                            }
+                            
+                        }
+                        .refreshable {
+                            Task {
+                                await self.intent.load()
+                            }
                         }
                     }
-                    .onDelete {
-                        indexSet in
-                        gameList.gameList.remove(atOffsets: indexSet)
-                    }
-                    
                 }
-                .refreshable {
-                    Task {
-                        await self.intent.load()
+                .onAppear{
+                    switch gameList.state{
+                    case .empty:
+                        Task{
+                            await self.intent.load()
+                        }
+                    default:
+                        break
                     }
                 }
-            }
-        }
-        .onAppear{
-            switch gameList.state{
-                case .empty:
-                    Task{
-                        await self.intent.load()
-                    }
-                default:
-                    break
             }
         }
     }

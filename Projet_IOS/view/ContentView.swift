@@ -13,8 +13,6 @@ struct ContentView: View {
     @StateObject var gameList : GameList = GameList(gameList: [])
     
     @AppStorage("token") var token: String = ""
-    
-    @StateObject var trackListViewModel = TrackListViewModel(trackModelList: TrackDTO.dtoToArray(dtoArray: JsonHelper.loadFromFile(name: "test", extensionName: "json") ?? []))
 
     var body: some View {
         TabView {

@@ -18,7 +18,7 @@ class DAO<T: Codable> {
         
         let encoded = try! JSONEncoder().encode(newObject)
         
-        guard let url = URL(string:"https://us-central1-projetwebig4-back.cloudfunctions.net/app/api/v1" + url) else {
+        guard let url = URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1" + url) else {
             throw RequestError.serverError
         }
         
@@ -52,7 +52,7 @@ class DAO<T: Codable> {
     
     public func getAll(url: String) async throws -> [T] {
         do{
-            let (data, _ ) = try await URLSession.shared.data(from: URL(string:"https://us-central1-projetwebig4-back.cloudfunctions.net/app/api/v1" + url)!)
+            let (data, _ ) = try await URLSession.shared.data(from: URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1" + url)!)
             return JsonHelper.decodeGeneric(data: data)
         }
         catch{
@@ -64,7 +64,7 @@ class DAO<T: Codable> {
         
         let encoded = try! JSONEncoder().encode(updatedObject)
         
-        guard let url = URL(string:"https://us-central1-projetwebig4-back.cloudfunctions.net/app/api/v1" + url + "/" + id) else {
+        guard let url = URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1" + url + "/" + id) else {
             throw RequestError.serverError
         }
         
@@ -98,7 +98,7 @@ class DAO<T: Codable> {
     
     public func delete(url: String, id: String) async throws {
         
-        guard let url = URL(string: "https://us-central1-projetwebig4-back.cloudfunctions.net/app/api/v1" + url + "/" + id) else {
+        guard let url = URL(string: "https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1" + url + "/" + id) else {
             throw RequestError.serverError
         }
         

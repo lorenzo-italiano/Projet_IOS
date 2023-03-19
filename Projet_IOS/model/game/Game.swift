@@ -4,7 +4,7 @@
 
 import Foundation
 
-class Game: Decodable, ObservableObject, Hashable, Equatable {
+class Game: ObservableObject, Hashable, Equatable, Codable {
     
     static func == (lhs: Game, rhs: Game) -> Bool {
         return lhs.id == rhs.id && lhs.name == rhs.name && lhs.type == rhs.type && lhs.picture == rhs.picture
@@ -14,13 +14,13 @@ class Game: Decodable, ObservableObject, Hashable, Equatable {
         hasher.combine(id)
     }
     
-    private var id : String
+    @Published var id : String?
     @Published var name : String
     @Published var type : String
     @Published var picture : String
 
 
-    init(id: String, name: String, type: String, picture: String) {
+    init(id: String?, name: String, type: String, picture: String) {
         self.id = id
         self.name = name
         self.type = type
@@ -48,5 +48,15 @@ class Game: Decodable, ObservableObject, Hashable, Equatable {
         let pictureContainer = try decoder.container(keyedBy: CodingKeys.self)
         picture = try pictureContainer.decode(String.self, forKey: .picture)
     }
-
+    
+    func encode(to encoder: Encoder) throws {
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        // try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(type, forKey: .type)
+        try container.encode(picture, forKey: .picture)
+    }
+    
 }

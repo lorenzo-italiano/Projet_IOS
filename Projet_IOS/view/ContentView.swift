@@ -12,6 +12,8 @@ struct ContentView: View {
     
     @StateObject var gameList : GameList = GameList(gameList: [])
     
+    @AppStorage("token") var token: String = ""
+    
     @StateObject var trackListViewModel = TrackListViewModel(trackModelList: TrackDTO.dtoToArray(dtoArray: JsonHelper.loadFromFile(name: "test", extensionName: "json") ?? []))
 
     var body: some View {
@@ -31,6 +33,18 @@ struct ContentView: View {
                     Image(systemName: "music.note")
                     Text("Tracks")
                 }
+            LoginView()
+                .tabItem {
+                    Image(systemName: "person.crop.circle.fill")
+                    Text("Connexion")
+                }
+                .isVisible(token == "")
+            ProfileView()
+                .tabItem {
+                    Image(systemName: "person.crop.circle.fill")
+                    Text("Profile")
+                }
+                .isVisible(token != "")
         }
     }
 }

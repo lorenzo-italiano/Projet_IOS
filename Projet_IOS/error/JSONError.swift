@@ -4,7 +4,7 @@
 
 import Foundation
 
-enum JSONError : Error, CustomStringConvertible{
+enum JSONError : Error, CustomStringConvertible {
     case fileNotFound(String)
     case JsonDecodingFailed
     case JsonEncodingFailed

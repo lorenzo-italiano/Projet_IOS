@@ -9,13 +9,19 @@ import SwiftUI
 
 class GameList: ObservableObject {
 
-    @Published public var gameList: [Game]{
+    @Published var gameList: [Game]
+    
+    @Published public var state : GameState = .empty{
         didSet{
-            state = .ready
+            switch state {
+                case .loaded(let data):
+                    gameList = data
+                    state = .ready
+                default:
+                    break
+            }
         }
     }
-    
-    @Published var state : GameState = .empty
 
     init(gameList: [Game]) {
         self.gameList = gameList

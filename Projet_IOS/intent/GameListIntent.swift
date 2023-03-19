@@ -9,24 +9,54 @@ import SwiftUI
 import Foundation
 
 struct GameListIntent {
+    
     @ObservedObject private var model : GameList
+    
+    private var gameDAO = GameDAO()
 
     init(model: GameList){
         self.model = model
     }
 
     // intent to load data from api
-    func load() async -> Void {
+    func load() async throws -> Void {
         model.state = .loading
+        
         do{
-            let (data, _ ) = try await URLSession.shared.data(from: URL(string:"https://us-central1-projetwebig4-back.cloudfunctions.net/app/api/v1/games")!)
-            model.gameList = JsonHelper.decodeGames(data: data)!
+            model.state = .loaded(try await gameDAO.getAll(url:"/games"))
         }
         catch{
-        // some error: invalid data?
+            throw RequestError.serverError
         }
-        model.state = .ready
+
     }
+    
+    func delete(id: String) async throws -> Void {
+        do{
+            try await gameDAO.delete(url: "/games", id: id)
+        }
+        catch RequestError.unauthorized{
+            throw RequestError.unauthorized
+        }
+        catch RequestError.serverError{
+            throw RequestError.serverError
+        }
+    }
+    
+    func createGame() async throws -> Void{
+        let mydata = Game(id: nil, name: "UUUUUNO", type: "famille", picture: "")
 
-
+        do{
+            try await gameDAO.create(url: "/games", newObject: mydata)
+        }
+        catch RequestError.unauthorized{
+            throw RequestError.unauthorized
+        }
+        catch RequestError.serverError{
+            throw RequestError.serverError
+        }
+        catch RequestError.badRequest{
+            throw RequestError.badRequest
+        }
+    }
 }

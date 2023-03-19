@@ -28,11 +28,6 @@ struct ContentView: View {
                     Image(systemName: "gamecontroller.fill")
                     Text("Jeux")
                 }
-            TrackListView(trackListViewModel: trackListViewModel)
-                .tabItem {
-                    Image(systemName: "music.note")
-                    Text("Tracks")
-                }
             LoginView()
                 .tabItem {
                     Image(systemName: "person.crop.circle.fill")

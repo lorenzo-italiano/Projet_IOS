@@ -38,6 +38,16 @@ struct JsonHelper {
 //        return .success(content)
 //    }
 
+    static func decodeGeneric<T: Decodable>(data: Data) -> [T] {
+        let decoder = JSONDecoder() // création d'un décodeur
+
+        //print(data)
+
+        if let decoded = try? decoder.decode([T].self, from: data) { // si on a réussit à décoder
+            return decoded
+        }
+        return []
+    }
 
     static func decode(data: Data) -> [TrackDTO]? {
         let decoder = JSONDecoder() // création d'un décodeur
@@ -61,6 +71,10 @@ struct JsonHelper {
         return nil
     }
 
+    static func encode<T: Encodable>(data: T) async -> Data? {
+        let encoder = JSONEncoder()
+        return try? encoder.encode(data)
+    }
 
 
 

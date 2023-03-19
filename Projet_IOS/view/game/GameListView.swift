@@ -13,6 +13,10 @@ struct GameListView: View {
     
     @State private var intent : GameListIntent
     
+    @State private var showingAlert = false
+    @State private var alertMessage: String = ""
+
+    
     init(gameList: GameList) {
         self.gameList = gameList
         self.intent = GameListIntent(model: self._gameList.wrappedValue)
@@ -20,7 +24,7 @@ struct GameListView: View {
 
     var body: some View {
         VStack{
-            if case .loading = gameList.state{
+            if case .loading = gameList.state {
                 ProgressView()
             }
             else{
@@ -34,25 +38,84 @@ struct GameListView: View {
                             }
                             .onDelete {
                                 indexSet in
-                                gameList.gameList.remove(atOffsets: indexSet)
+                                for index in indexSet{
+                                    Task{
+                                        do{
+                                            try await self.intent.delete(id: self.gameList.gameList[index].id ?? "")
+                                            try await self.intent.load()
+                                            showingAlert = true
+                                            alertMessage = "Vous avez supprimé un jeu !"
+                                        }
+                                        catch RequestError.unauthorized{
+                                            showingAlert = true
+                                            alertMessage = RequestError.unauthorized.description
+                                        }
+                                        catch RequestError.serverError{
+                                            showingAlert = true
+                                            alertMessage = RequestError.serverError.description
+                                        }
+                                    }
+                                    
+                                }
+//                                gameList.gameList.index(gameList.gameList.startIndex, offsetBy: indexSet)
+//                                gameList.gameList.remove(atOffsets: indexSet)
                             }
                             
                         }
                         .refreshable {
-                            Task {
-                                await self.intent.load()
+                            Task{
+                                do{
+                                    try await self.intent.load()
+                                }
+                                catch RequestError.serverError{
+                                    showingAlert = true
+                                    alertMessage = RequestError.serverError.description
+                                }
+                            }
+                        }
+                        Button("Create Game"){
+                            print("button pressed")
+                            Task{
+                                do{
+                                    try await self.intent.createGame()
+                                    try await self.intent.load()
+                                    showingAlert = true
+                                    alertMessage = "Vous avez créé un nouveau jeu !"
+                                }
+                                catch RequestError.unauthorized{
+                                    showingAlert = true
+                                    alertMessage = RequestError.unauthorized.description
+                                }
+                                catch RequestError.serverError{
+                                    showingAlert = true
+                                    alertMessage = RequestError.serverError.description
+                                }
+                                catch RequestError.alreadyExists{
+                                    showingAlert = true
+                                    alertMessage = RequestError.alreadyExists.description
+                                }
+                                catch RequestError.badRequest{
+                                    showingAlert = true
+                                    alertMessage = RequestError.badRequest.description
+                                }
                             }
                         }
                     }
                 }
+                .alert(alertMessage, isPresented: $showingAlert) {
+                    Button("OK", role: .cancel) { }
+                }
                 .onAppear{
-                    switch gameList.state{
-                    case .empty:
+                    if case .empty = gameList.state{
                         Task{
-                            await self.intent.load()
+                            do{
+                                try await self.intent.load()
+                            }
+                            catch RequestError.serverError{
+                                showingAlert = true
+                                alertMessage = RequestError.serverError.description
+                            }
                         }
-                    default:
-                        break
                     }
                 }
             }

@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum GameState : CustomStringConvertible{
+enum GameState{
     case ready
     case empty
     case loading
+    case loaded([Game])
     case error(GameIntentError)
-    var description: String { "bla" }
 }

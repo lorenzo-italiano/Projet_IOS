@@ -7,26 +7,26 @@ import SwiftUI
 
 struct JsonHelper {
 
-    // First method without Result and error handling
-    static func loadFromFile(name:String, extensionName: String) -> [TrackDTO]? {
-        if let fileURL = Bundle.main.url(forResource: name, withExtension: extensionName){ // paramètres de type String
-            if let content = try? Data(contentsOf: fileURL) {
-                // donnée de type Data (buffer d'octets)
-                return decode(data: content)
-            }
-        }
+//    // First method without Result and error handling
+//    static func loadFromFile(name:String, extensionName: String) -> [TrackDTO]? {
+//        if let fileURL = Bundle.main.url(forResource: name, withExtension: extensionName){ // paramètres de type String
+//            if let content = try? Data(contentsOf: fileURL) {
+//                // donnée de type Data (buffer d'octets)
+//                return decode(data: content)
+//            }
+//        }
+//
+//        return nil
+//    }
 
-        return nil
-    }
-
-    static func writeJSONToFile(data: Data, toUrl: URL) -> Result<String, JSONError>{
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        let json = try? encoder.encode(data)
-        guard let jsonData = json else { return .failure(.JsonEncodingFailed)}
-        try? jsonData.write(to: toUrl)
-        return .success("Success !")
-    }
+//    static func writeJSONToFile(data: Data, toUrl: URL) -> Result<String, JSONError>{
+//        let encoder = JSONEncoder()
+//        encoder.outputFormatting = .prettyPrinted
+//        let json = try? encoder.encode(data)
+//        guard let jsonData = json else { return .failure(.JsonEncodingFailed)}
+//        try? jsonData.write(to: toUrl)
+//        return .success("Success !")
+//    }
 
 //    static func loadFromFile(filename: String, ext: String) -> Result<Data, JSONError>{ // Data si succès, JSONError sinon
 //        guard let fileURL = Bundle.main.url(forResource: filename, withExtension: ext) else {
@@ -49,16 +49,16 @@ struct JsonHelper {
         return []
     }
 
-    static func decode(data: Data) -> [TrackDTO]? {
-        let decoder = JSONDecoder() // création d'un décodeur
-
-        //print(data)
-
-        if let decoded = try? decoder.decode([TrackDTO].self, from: data) { // si on a réussit à décoder
-            return decoded
-        }
-        return nil
-    }
+//    static func decode(data: Data) -> [TrackDTO]? {
+//        let decoder = JSONDecoder() // création d'un décodeur
+//
+//        //print(data)
+//
+//        if let decoded = try? decoder.decode([TrackDTO].self, from: data) { // si on a réussit à décoder
+//            return decoded
+//        }
+//        return nil
+//    }
     
     static func decodeGames(data: Data) -> [Game]? {
         let decoder = JSONDecoder() // création d'un décodeur

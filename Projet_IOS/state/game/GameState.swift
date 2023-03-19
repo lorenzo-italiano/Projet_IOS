@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum GameState{
+enum GameState {
     case ready
     case empty
     case loading

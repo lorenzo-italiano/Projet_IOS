@@ -11,14 +11,11 @@ class GameList: ObservableObject {
 
     @Published var gameList: [Game]
     
-    @Published public var state : GameState = .empty{
+    @Published public var state : GameState = .empty {
         didSet{
-            switch state {
-                case .loaded(let data):
-                    gameList = data
-                    state = .ready
-                default:
-                    break
+            if case .loaded(let data) = state {
+                gameList = data
+                state = .ready
             }
         }
     }

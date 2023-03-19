@@ -11,12 +11,13 @@ import SwiftUI
 struct ContentView: View {
     
     @StateObject var gameList : GameList = GameList(gameList: [])
+    @StateObject var volunteerList : VolunteerList = VolunteerList(volunteerList: [])
     
     @AppStorage("token") var token: String = ""
 
     var body: some View {
         TabView {
-           Text("The content of the first view")
+            Text("The content of the first view")
                 .tabItem {
                     Image(systemName: "house.fill")
                     Text("Accueil")
@@ -25,6 +26,11 @@ struct ContentView: View {
                 .tabItem {
                     Image(systemName: "gamecontroller.fill")
                     Text("Jeux")
+                }
+            VolunteerListView(volunteerList: volunteerList)
+                .tabItem {
+                    Image(systemName: "gamecontroller.fill")
+                    Text("Bénévoles")
                 }
             LoginView()
                 .tabItem {

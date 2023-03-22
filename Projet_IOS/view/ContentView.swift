@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @StateObject var gameList : GameList = GameList(gameList: [])
+    @StateObject var timeslotList : TimeslotList = TimeslotList(timeslotList: [])
     @StateObject var volunteerList : VolunteerList = VolunteerList(volunteerList: [])
 
     @State private var tabSelection = 1
@@ -25,10 +25,10 @@ struct ContentView: View {
                     Text("Accueil")
                 }
                 .tag(1)
-            GameListView(gameList: gameList)
+            TimeslotListView(timeslotList: timeslotList)
                 .tabItem {
                     Image(systemName: "gamecontroller.fill")
-                    Text("Jeux")
+                    Text("Créneaux")
                 }
                 .tag(2)
             VolunteerListView(volunteerList: volunteerList)

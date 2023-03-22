@@ -8,14 +8,14 @@
 import Foundation
 
 struct UserIntent {
+
+    private var userDao = UserDAO()
     
-    init(){
-        
-    }
+    init() { }
     
     func login(email: String, password: String) async throws{
         do {
-            try await UserDAO().login(email: email, password: password)
+            try await userDao.login(email: email, password: password)
         }
         catch LoginError.userNotFound {
             throw LoginError.userNotFound
@@ -28,6 +28,24 @@ struct UserIntent {
         }
         catch LoginError.unknown {
             throw LoginError.unknown
+        }
+    }
+
+    func signup(name: String, surname: String, email: String, password: String, passwordRepeat: String) async throws {
+        do {
+            try await userDao.signup(name: name, surname: surname, email: email, password: password, passwordRepeat: passwordRepeat)
+        }
+        catch RequestError.badRequest{
+            throw RequestError.badRequest
+        }
+        catch RequestError.serverError{
+            throw RequestError.serverError
+        }
+        catch RequestError.alreadyExists{
+            throw RequestError.alreadyExists
+        }
+        catch {
+            throw RequestError.unknown
         }
     }
 }

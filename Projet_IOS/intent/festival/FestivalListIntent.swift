@@ -1,16 +1,17 @@
 //
-// Created by Lorenzo Italiano on 22/03/2023.
+// Created by Lorenzo Italiano on 23/03/2023.
 //
 
 import Foundation
 import SwiftUI
 
-struct ZoneListIntent {
-    @ObservedObject private var model : ZoneList
+class FestivalListIntent {
 
-    private var zoneDAO = ZoneDAO()
+    @ObservedObject private var model : FestivalList
 
-    init(model: ZoneList){
+    private var festivalDAO = FestivalDAO()
+
+    init(model: FestivalList){
         self.model = model
     }
 
@@ -19,7 +20,7 @@ struct ZoneListIntent {
         model.state = .loading
 
         do{
-            model.state = .loaded(try await zoneDAO.getAll(url:"/zones"))
+            model.state = .loaded(try await festivalDAO.getAll(url:"/festivals"))
         }
         catch{
             throw RequestError.serverError
@@ -28,7 +29,7 @@ struct ZoneListIntent {
 
     func delete(id: String) async throws -> Void {
         do{
-            try await zoneDAO.delete(url: "/zones", id: id)
+            try await festivalDAO.delete(url: "/festivals", id: id)
         }
         catch RequestError.unauthorized{
             throw RequestError.unauthorized
@@ -37,5 +38,4 @@ struct ZoneListIntent {
             throw RequestError.serverError
         }
     }
-
 }

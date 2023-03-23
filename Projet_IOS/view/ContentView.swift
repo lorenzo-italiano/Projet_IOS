@@ -12,6 +12,7 @@ struct ContentView: View {
     
     @StateObject var timeslotList : TimeslotList = TimeslotList(timeslotList: [])
     @StateObject var zoneList : ZoneList = ZoneList(zoneList: [])
+    @StateObject var festivalList : FestivalList = FestivalList(festivalList: [])
     @StateObject var volunteerList : VolunteerList = VolunteerList(volunteerList: [])
 
     @State private var tabSelection = 1
@@ -44,6 +45,12 @@ struct ContentView: View {
                     Text("Zones")
                 }
                 .tag(7)
+            FestivalListView(festivalList: festivalList)
+                .tabItem {
+                    Image(systemName: "gamecontroller.fill")
+                    Text("Festivals")
+                }
+                .tag(8)
             LoginView()
                 .tabItem {
                     Image(systemName: "person.crop.circle.fill")

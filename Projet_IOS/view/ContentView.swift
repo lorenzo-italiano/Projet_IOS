@@ -10,7 +10,9 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @StateObject var gameList : GameList = GameList(gameList: [])
+    @StateObject var timeslotList : TimeslotList = TimeslotList(timeslotList: [])
+    @StateObject var zoneList : ZoneList = ZoneList(zoneList: [])
+    @StateObject var festivalList : FestivalList = FestivalList(festivalList: [])
     @StateObject var volunteerList : VolunteerList = VolunteerList(volunteerList: [])
 
     @State private var tabSelection = 1
@@ -25,10 +27,10 @@ struct ContentView: View {
                     Text("Accueil")
                 }
                 .tag(1)
-            GameListView(gameList: gameList)
+            TimeslotListView(timeslotList: timeslotList)
                 .tabItem {
                     Image(systemName: "gamecontroller.fill")
-                    Text("Jeux")
+                    Text("Créneaux")
                 }
                 .tag(2)
             VolunteerListView(volunteerList: volunteerList)
@@ -37,6 +39,18 @@ struct ContentView: View {
                     Text("Bénévoles")
                 }
                 .tag(3)
+            ZoneListView(zoneList: zoneList)
+                .tabItem {
+                    Image(systemName: "gamecontroller.fill")
+                    Text("Zones")
+                }
+                .tag(7)
+            FestivalListView(festivalList: festivalList)
+                .tabItem {
+                    Image(systemName: "gamecontroller.fill")
+                    Text("Festivals")
+                }
+                .tag(8)
             LoginView()
                 .tabItem {
                     Image(systemName: "person.crop.circle.fill")

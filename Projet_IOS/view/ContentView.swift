@@ -11,6 +11,7 @@ import SwiftUI
 struct ContentView: View {
     
     @StateObject var timeslotList : TimeslotList = TimeslotList(timeslotList: [])
+    @StateObject var zoneList : ZoneList = ZoneList(zoneList: [])
     @StateObject var volunteerList : VolunteerList = VolunteerList(volunteerList: [])
 
     @State private var tabSelection = 1
@@ -37,6 +38,12 @@ struct ContentView: View {
                     Text("Bénévoles")
                 }
                 .tag(3)
+            ZoneListView(zoneList: zoneList)
+                .tabItem {
+                    Image(systemName: "gamecontroller.fill")
+                    Text("Zones")
+                }
+                .tag(7)
             LoginView()
                 .tabItem {
                     Image(systemName: "person.crop.circle.fill")

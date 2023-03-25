@@ -33,18 +33,21 @@ struct ContentView: View {
                     Text("Créneaux")
                 }
                 .tag(2)
+                .isVisible(false)
             VolunteerListView(volunteerList: volunteerList)
                 .tabItem {
                     Image(systemName: "gamecontroller.fill")
                     Text("Bénévoles")
                 }
                 .tag(3)
+                .isVisible(false)
             ZoneListView(zoneList: zoneList)
                 .tabItem {
                     Image(systemName: "gamecontroller.fill")
                     Text("Zones")
                 }
                 .tag(7)
+                .isVisible(false)
             FestivalListView(festivalList: festivalList)
                 .tabItem {
                     Image(systemName: "gamecontroller.fill")

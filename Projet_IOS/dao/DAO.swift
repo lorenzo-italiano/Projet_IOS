@@ -59,6 +59,17 @@ class DAO<T: Codable> {
             throw RequestError.serverError
         }
     }
+
+    public func getById(url: String, id: String) async throws -> T {
+        do{
+            let (data, _ ) = try await URLSession.shared.data(from: URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1" + url + "/" + id)!)
+            // TODO replace point d'exclamation with try catch
+            return JsonHelper.decodeOne(data: data)!
+        }
+        catch{
+            throw RequestError.serverError
+        }
+    }
     
     public func updateWithPut(url: String, updatedObject: T, id: String) async throws {
         

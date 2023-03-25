@@ -6,12 +6,19 @@ import Foundation
 
 class Volunteer: ObservableObject, Hashable, Equatable, Codable {
 
-    static func == (lhs: Volunteer, rhs: Volunteer) -> Bool {
-        return lhs.id == rhs.id && lhs.name == rhs.name && lhs.surname == rhs.surname && lhs.profilePicture == rhs.profilePicture && lhs.password == rhs.password && lhs.isAdmin == rhs.isAdmin && lhs.email == rhs.email
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+    @Published var state : VolunteerState = .empty {
+        didSet{
+            if case .loaded(let data) = state {
+                id = data.id
+                email = data.email
+                surname = data.surname
+                name = data.name
+                profilePicture = data.profilePicture
+                password = data.password
+                isAdmin = data.isAdmin
+                state = .ready
+            }
+        }
     }
 
     @Published var id: String
@@ -21,6 +28,16 @@ class Volunteer: ObservableObject, Hashable, Equatable, Codable {
     @Published var profilePicture : String?
     @Published var password : String
     @Published var isAdmin : Bool
+
+    init() {
+        self.id = ""
+        self.email = ""
+        self.surname = ""
+        self.name = ""
+        self.profilePicture = ""
+        self.password = ""
+        self.isAdmin = false
+    }
 
     init(id: String, email: String, surname: String, name: String, profilePicture: String?, password: String, isAdmin: Bool) {
         self.id = id
@@ -78,6 +95,14 @@ class Volunteer: ObservableObject, Hashable, Equatable, Codable {
         try container.encode(profilePicture, forKey: .profilePicture)
         try container.encode(password, forKey: .password)
         try container.encode(isAdmin, forKey: .isAdmin)
+    }
+
+    static func == (lhs: Volunteer, rhs: Volunteer) -> Bool {
+        return lhs.id == rhs.id && lhs.name == rhs.name && lhs.surname == rhs.surname && lhs.profilePicture == rhs.profilePicture && lhs.password == rhs.password && lhs.isAdmin == rhs.isAdmin && lhs.email == rhs.email
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 
 }

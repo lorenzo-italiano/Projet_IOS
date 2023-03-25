@@ -18,10 +18,10 @@ class Festival: ObservableObject, Hashable, Equatable, Codable {
     @Published var name : String
     @Published var year : Int
     @Published var isActive : Bool
-    @Published var zoneList : [String]
-    @Published var timeslotList : [String]
+    @Published var zoneList : [Zone]
+    @Published var timeslotList : [Timeslot]
 
-    init(id: String?, name: String, year: Int, isActive: Bool, zoneList: [String], timeslotList: [String]) {
+    init(id: String?, name: String, year: Int, isActive: Bool, zoneList: [Zone], timeslotList: [Timeslot]) {
         self.id = id
         self.name = name
         self.year = year
@@ -54,10 +54,10 @@ class Festival: ObservableObject, Hashable, Equatable, Codable {
         isActive = try isActiveContainer.decode(Bool.self, forKey: .isActive)
 
         let zoneListContainer = try decoder.container(keyedBy: CodingKeys.self)
-        zoneList = try zoneListContainer.decode([String].self, forKey: .zoneList)
+        zoneList = try zoneListContainer.decode([Zone].self, forKey: .zoneList)
 
         let timeslotListContainer = try decoder.container(keyedBy: CodingKeys.self)
-        timeslotList = try timeslotListContainer.decode([String].self, forKey: .timeslotList)
+        timeslotList = try timeslotListContainer.decode([Timeslot].self, forKey: .timeslotList)
     }
 
     func encode(to encoder: Encoder) throws {

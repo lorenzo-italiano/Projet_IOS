@@ -30,7 +30,7 @@ struct FestivalListView: View {
                         List {
                             ForEach(festivalList.festivalList, id: \.self) { festival in
                                 NavigationLink(destination: FestivalDetailView(festival: festival)){
-                                    Text(festival.name)
+                                    FestivalItemView(festival: festival)
                                 }
                             }
 //                            .onDelete {

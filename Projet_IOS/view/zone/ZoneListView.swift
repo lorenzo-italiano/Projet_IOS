@@ -57,17 +57,17 @@ struct ZoneListView: View {
 //                                }
 //                            }
                         }
-                        .refreshable {
-                            Task{
-                                do{
-                                    try await self.intent.getAll()
-                                }
-                                catch RequestError.serverError{
-                                    showingAlert = true
-                                    alertMessage = RequestError.serverError.description
-                                }
-                            }
-                        }
+//                        .refreshable {
+//                            Task{
+//                                do{
+//                                    try await self.intent.getAll()
+//                                }
+//                                catch RequestError.serverError{
+//                                    showingAlert = true
+//                                    alertMessage = RequestError.serverError.description
+//                                }
+//                            }
+//                        }
 //                        Button("Create Game"){
 //                            print("button pressed")
 //                            Task{
@@ -100,19 +100,19 @@ struct ZoneListView: View {
                 .alert(alertMessage, isPresented: $showingAlert) {
                     Button("OK", role: .cancel) { }
                 }
-                .onAppear{
-                    if case .empty = zoneList.state{
-                        Task{
-                            do{
-                                try await self.intent.getAll()
-                            }
-                            catch RequestError.serverError{
-                                showingAlert = true
-                                alertMessage = RequestError.serverError.description
-                            }
-                        }
-                    }
-                }
+//                .onAppear{
+//                    if case .empty = zoneList.state{
+//                        Task{
+//                            do{
+//                                try await self.intent.getAll()
+//                            }
+//                            catch RequestError.serverError{
+//                                showingAlert = true
+//                                alertMessage = RequestError.serverError.description
+//                            }
+//                        }
+//                    }
+//                }
             }
         }
     }

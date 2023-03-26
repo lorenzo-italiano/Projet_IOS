@@ -22,6 +22,16 @@ class Timeslot: ObservableObject, Hashable, Equatable, Codable {
         return formatter.date(from: string)
     }
 
+    static func dateToISOString(date: Date) -> String {
+        // Create Date Formatter
+        let dateFormatter = ISO8601DateFormatter()
+
+        dateFormatter.formatOptions.insert(.withFractionalSeconds)
+
+        // Convert Date to String
+        return dateFormatter.string(from: date)
+    }
+
     @Published var id: String
     @Published var startDate : String
     @Published var endDate : String

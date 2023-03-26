@@ -11,7 +11,6 @@ import SwiftUI
 struct ContentView: View {
     
     @StateObject var timeslotList : TimeslotList = TimeslotList(timeslotList: [])
-    @StateObject var zoneList : ZoneList = ZoneList(zoneList: [])
     @StateObject var festivalList : FestivalList = FestivalList(festivalList: [])
     @StateObject var volunteerList : VolunteerList = VolunteerList(volunteerList: [])
 
@@ -40,13 +39,6 @@ struct ContentView: View {
                     Text("Bénévoles")
                 }
                 .tag(3)
-                .isVisible(false)
-            ZoneListView(zoneList: zoneList)
-                .tabItem {
-                    Image(systemName: "gamecontroller.fill")
-                    Text("Zones")
-                }
-                .tag(7)
                 .isVisible(false)
             FestivalListView(festivalList: festivalList)
                 .tabItem {

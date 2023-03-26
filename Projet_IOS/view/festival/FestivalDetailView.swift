@@ -47,8 +47,33 @@ struct FestivalDetailView: View {
             Text(festival.name)
             Text("Édition " + String(festival.year))
             Text("Durée du festival: " + computeNumberOfDays() + " jours")
-            Button("Emploi du temps"){ }
-            Button("Voir le plan"){ }
+            NavigationLink {
+                FestivalDayListView(festival: festival)
+            } label: {
+                Text("Emploi du temps")
+            }
+            .buttonStyle(.borderedProminent)
+            NavigationLink {
+                ZoneListView(zoneList: ZoneList(zoneList: festival.zoneList))
+            } label: {
+                Text("Voir les zones")
+            }
+            .buttonStyle(.borderedProminent)
+
+            NavigationLink {
+                FestivalCreateDayView(festival: festival)
+            } label: {
+                Text("Ajouter une journée")
+            }
+            .buttonStyle(.borderedProminent)
+
+            NavigationLink {
+                FestivalCreateZoneView(festival: festival)
+            } label: {
+                Text("Ajouter une zone")
+            }
+                    .buttonStyle(.borderedProminent)
+
         }
     }
 

@@ -14,6 +14,7 @@ struct FestivalListView: View {
     @State private var showingAlert = false
     @State private var alertMessage: String = ""
 
+
     init(festivalList: FestivalList) {
         self.festivalList = festivalList
         self.intent = FestivalListIntent(model: self._festivalList.wrappedValue)
@@ -67,33 +68,10 @@ struct FestivalListView: View {
                                 }
                             }
                         }
-//                        Button("Create Game"){
-//                            print("button pressed")
-//                            Task{
-//                                do{
-//                                    try await self.intent.createGame()
-//                                    try await self.intent.load()
-//                                    showingAlert = true
-//                                    alertMessage = "Vous avez créé un nouveau jeu !"
-//                                }
-//                                catch RequestError.unauthorized{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.unauthorized.description
-//                                }
-//                                catch RequestError.serverError{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.serverError.description
-//                                }
-//                                catch RequestError.alreadyExists{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.alreadyExists.description
-//                                }
-//                                catch RequestError.badRequest{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.badRequest.description
-//                                }
-//                            }
-//                        }
+                        NavigationLink(destination: FestivalCreationView(intent: intent)){
+                            Text("Créer un festival")
+                        }
+                        .buttonStyle(.borderedProminent)
                     }
                 }
                 .alert(alertMessage, isPresented: $showingAlert) {

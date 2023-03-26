@@ -52,4 +52,16 @@ struct FestivalIntent {
         }
     }
 
+    func addUserToTimeslot(timeslotId: String, userId: String) async throws {
+        do {
+            try await festivalDAO.addUserToTimeslot(timeslotId: timeslotId, userId: userId)
+        }
+        catch RequestError.unauthorized{
+            throw RequestError.unauthorized
+        }
+        catch RequestError.serverError{
+            throw RequestError.serverError
+        }
+    }
+
 }

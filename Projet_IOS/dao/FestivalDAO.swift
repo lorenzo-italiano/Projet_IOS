@@ -61,4 +61,34 @@ class FestivalDAO: DAO<Festival> {
             throw RequestError.serverError
         }
     }
+
+    public func addUserToTimeslot(timeslotId: String, userId: String) async throws {
+        let volunteer: Volunteer = Volunteer(id: userId, email: "", surname: "", name: "", profilePicture: "", password: "", isAdmin: false)
+        let encoded = try! JSONEncoder().encode(volunteer)
+
+        guard let url = URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1/timeslots/" + timeslotId + "/assign/") else {
+            throw RequestError.serverError
+        }
+
+        var request = URLRequest(url: url)
+
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "PUT"
+
+        let (_, response) = try! await URLSession.shared.upload(for: request, from: encoded)
+
+        guard let resp = response as? HTTPURLResponse else {
+            throw RequestError.serverError
+        }
+
+        if(resp.statusCode == 401) {
+            throw RequestError.unauthorized
+        }
+        else if(resp.statusCode == 500){
+
+            throw RequestError.serverError
+        }
+    }
 }

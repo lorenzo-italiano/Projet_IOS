@@ -7,12 +7,19 @@ import SwiftUI
 
 struct FestivalDayDetails: View {
 
+    @AppStorage("token") var token: String = ""
+
     @ObservedObject private var festival: Festival
+    @State private var intent: FestivalIntent = FestivalIntent(model: Festival(id: nil, name: "", year: 0, isActive: false, zoneList: [], timeslotList: []))
     private var date: Date
+
+    @State private var showingAlert = false
+    @State private var alertMessage: String = ""
 
     init(festival: Festival, date: Date){
         self.festival = festival
         self.date = date
+        self.intent = FestivalIntent(model: self._festival.wrappedValue)
     }
 
     private func getDayOfYear(date: Date) -> Int {
@@ -93,7 +100,21 @@ struct FestivalDayDetails: View {
                             Text(formatTimeslotString(startDate: Timeslot.stringToISODate(string: timeslot.startDate)!, endDate: Timeslot.stringToISODate(string: timeslot.endDate)!))
                             Spacer()
                             Button("Disponible"){
-                                print("TODO")
+                                Task {
+                                    do {
+                                        try await self.intent.addUserToTimeslot(timeslotId: timeslot.id, userId: JWTDecoder.decode(jwtToken: token)["userId"]! as! String)
+                                        self.showingAlert = true
+                                        self.alertMessage = "Vous vous êtes rendus disponible pour un créneau !"
+                                    }
+                                    catch RequestError.unauthorized {
+                                        self.showingAlert = true
+                                        self.alertMessage = RequestError.unauthorized.description
+                                    }
+                                    catch RequestError.serverError {
+                                        self.showingAlert = true
+                                        self.alertMessage = RequestError.serverError.description
+                                    }
+                                }
                             }
                         }
                     }
@@ -131,6 +152,10 @@ struct FestivalDayDetails: View {
 //                                }
 //                            }
 //                        }
+            }
+            .alert(alertMessage, isPresented: $showingAlert) {
+                Button("OK", role: .cancel) {
+                }
             }
         }
     }

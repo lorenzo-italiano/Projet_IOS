@@ -35,10 +35,28 @@ struct LoginView: View {
                     SecureInputView("Mot de passe", text: $password)
                         .padding(.all)
                 }
+
+                Button("Mot de passe oublié"){
+                    Task {
+                        do {
+                            try await self.intent.forgottenPassword(email: email)
+                            showingAlert = true
+                            alertMessage = "Vous avez reçu un mail pour changer votre mot de passe !"
+                        }
+                        catch RequestError.serverError {
+                            showingAlert = true
+                            alertMessage = RequestError.serverError.description
+                        }
+                    }
+                }
+                        .padding(.all)
+                        .buttonStyle(.borderedProminent)
                 .alert(alertMessage, isPresented: $showingAlert) {
                     Button("OK", role: .cancel) { }
                 }
             }
+
+
 
             Button("Connexion"){
                 Task{

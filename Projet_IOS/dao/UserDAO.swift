@@ -85,4 +85,31 @@ class UserDAO {
             throw RequestError.unknown
         }
     }
+
+    public func forgottenPassword(email: String) async throws{
+        let volunteer = Volunteer(id: "", email: email, surname: "", name: "", profilePicture: "", password: "", isAdmin: false)
+        let encoded = try! JSONEncoder().encode(volunteer)
+
+        guard let url = URL(string:"https://europe-west1-projetios-backend.cloudfunctions.net/app/api/v1/volunteers/forgotten") else {
+            throw RequestError.serverError
+        }
+
+        var request = URLRequest(url: url)
+
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+//        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "POST"
+
+        let (data, response) = try! await URLSession.shared.upload(for: request, from: encoded)
+
+        guard let resp = response as? HTTPURLResponse else {
+            throw RequestError.serverError
+        }
+
+        if(resp.statusCode == 500){
+            throw RequestError.serverError
+        }
+
+    }
 }

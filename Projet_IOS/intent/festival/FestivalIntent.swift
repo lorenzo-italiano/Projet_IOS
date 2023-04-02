@@ -267,4 +267,22 @@ struct FestivalIntent {
         }
     }
 
+    public func getNbVolunteersTimeslot(id: String) async throws -> String {
+        do {
+            return try await festivalDAO.getNbVolunteersTimeslot(id: id)
+        }
+        catch RequestError.serverError {
+            throw RequestError.serverError
+        }
+    }
+
+    public func getMaxCapacityTimeslot(id: String) async throws -> String {
+        do {
+            return try await festivalDAO.getMaxCapacityTimeslot(id: id)
+        }
+        catch RequestError.serverError {
+            throw RequestError.serverError
+        }
+    }
+
 }

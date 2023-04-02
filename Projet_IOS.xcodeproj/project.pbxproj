@@ -101,6 +101,7 @@
 		572B0F0A780BDD8C0535DA19 /* TimeslotDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572B09EF0A3EB0BFE9B2D81E /* TimeslotDetailView.swift */; };
 		572B0F66C8DB9A3DD0961CA8 /* URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572B05D159675992B5C4AE4F /* URLSession.swift */; };
 		572B0F71600D9CE1AA0766E3 /* FestivalCreationDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572B01223FD27907372B7A8A /* FestivalCreationDAO.swift */; };
+		572B0FCEA7A947A95FD700C5 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572B0A5297E2E06721493DA1 /* DateExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -195,6 +196,7 @@
 		572B09EF0A3EB0BFE9B2D81E /* TimeslotDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeslotDetailView.swift; sourceTree = "<group>"; };
 		572B0A355919E0DAB36C00AC /* Tab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		572B0A42C2C49B2C5AD893C3 /* FestivalCreateZoneView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FestivalCreateZoneView.swift; sourceTree = "<group>"; };
+		572B0A5297E2E06721493DA1 /* DateExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		572B0A52B9889DF5F3ABF016 /* Zone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		572B0A63723C0A490E2C022D /* ZoneDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneDetailView.swift; sourceTree = "<group>"; };
 		572B0A8D8D5135C79F42B153 /* FestivalItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FestivalItemView.swift; sourceTree = "<group>"; };
@@ -280,6 +282,7 @@
 				0F15570A29B9F0CF00EB98D8 /* Assets.xcassets */,
 				0F15570C29B9F0CF00EB98D8 /* Projet_IOS.entitlements */,
 				0F15570D29B9F0CF00EB98D8 /* Preview Content */,
+				572B05332FC0DEB9B1D4A53F /* dto */,
 			);
 			path = Projet_IOS;
 			sourceTree = "<group>";
@@ -515,6 +518,20 @@
 			path = zone;
 			sourceTree = "<group>";
 		};
+		572B03016E2D16EDDF2B65B7 /* festivals */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = festivals;
+			sourceTree = "<group>";
+		};
+		572B031247F3B28CC0EF8BC8 /* timeslot */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = timeslot;
+			sourceTree = "<group>";
+		};
 		572B031B8540CE5626E620A0 /* jwt */ = {
 			isa = PBXGroup;
 			children = (
@@ -533,11 +550,23 @@
 			path = zone;
 			sourceTree = "<group>";
 		};
+		572B05332FC0DEB9B1D4A53F /* dto */ = {
+			isa = PBXGroup;
+			children = (
+				572B03016E2D16EDDF2B65B7 /* festivals */,
+				572B031247F3B28CC0EF8BC8 /* timeslot */,
+				572B08C46EDD677850DCB96D /* volunteers */,
+				572B09AD1AB6A1EDC0B7ED8A /* zone */,
+			);
+			path = dto;
+			sourceTree = "<group>";
+		};
 		572B058FF23E97FB60FC6CB9 /* extensions */ = {
 			isa = PBXGroup;
 			children = (
 				572B05D159675992B5C4AE4F /* URLSession.swift */,
 				572B0452E5D348A1E5840E48 /* ConditionnalViewExtension.swift */,
+				572B0A5297E2E06721493DA1 /* DateExtension.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -598,6 +627,13 @@
 			path = volunteer;
 			sourceTree = "<group>";
 		};
+		572B08C46EDD677850DCB96D /* volunteers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = volunteers;
+			sourceTree = "<group>";
+		};
 		572B090574058B59DE268692 /* festival */ = {
 			isa = PBXGroup;
 			children = (
@@ -622,6 +658,13 @@
 				572B0AF5CE7AA406EF371B14 /* Timeslot.swift */,
 			);
 			path = timeslot;
+			sourceTree = "<group>";
+		};
+		572B09AD1AB6A1EDC0B7ED8A /* zone */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = zone;
 			sourceTree = "<group>";
 		};
 		572B0A9324970260F6DE7AD8 /* day */ = {
@@ -917,6 +960,7 @@
 				572B00433DAB2134A70A9E56 /* PasswordChangeObject.swift in Sources */,
 				572B0390AEA2487FE99EC48F /* ReassignVolunteerView.swift in Sources */,
 				572B0613F2CC329D30DAC575 /* ReassignObject.swift in Sources */,
+				572B0FCEA7A947A95FD700C5 /* DateExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

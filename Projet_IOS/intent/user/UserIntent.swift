@@ -48,4 +48,13 @@ struct UserIntent {
             throw RequestError.unknown
         }
     }
+
+    public func forgottenPassword(email: String) async throws {
+        do {
+            try await userDao.forgottenPassword(email: email)
+        }
+        catch RequestError.serverError {
+            throw RequestError.serverError
+        }
+    }
 }

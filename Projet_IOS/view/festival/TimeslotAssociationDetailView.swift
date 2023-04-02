@@ -18,6 +18,9 @@ struct TimeslotAssociationDetailView: View {
     @State private var showingAlert = false
     @State private var alertMessage: String = ""
 
+    @State private var capacity: String = ""
+    @State private var currentNumber: String = ""
+
     @State private var nbMissingVolunteers: String = ""
 
     private func formatDayString(date: Date) -> String {
@@ -76,7 +79,7 @@ struct TimeslotAssociationDetailView: View {
                 Text(formatDayShortString(date: Timeslot.stringToISODate(string: timeslotVolunteer.timeslot.startDate)!) + " " + formatTimeslotString(startDate: Timeslot.stringToISODate(string: timeslotVolunteer.timeslot.startDate)!, endDate: Timeslot.stringToISODate(string: timeslotVolunteer.timeslot.endDate)!))
                 Text("il manque " + nbMissingVolunteers + " bénévoles dans ce créneau").isVisible(Int(nbMissingVolunteers) ?? 0 >= 0)
                 Text("il y a " + String(abs(Int(nbMissingVolunteers) ?? 0)) + " bénévoles en trop dans ce créneau").isVisible(Int(nbMissingVolunteers) ?? 0 < 0)
-
+                Text("il y a " + currentNumber + " / " + capacity + " personnes pour ce créneau")
                 NavigationLink(destination: ReassignVolunteerView(zone: zone, festival: festival, timeslotVolunteer: timeslotVolunteer)){
                     Text("Réaffecter")
                 }
@@ -107,7 +110,7 @@ struct TimeslotAssociationDetailView: View {
                         }
                     }
                 }
-                        .isVisible(token != "" && festival.isActive && !isUserAlreadyInTimeslotZone(timeslotAssociation: timeslotVolunteer))
+                        .isVisible((Int(nbMissingVolunteers) ?? 0 > 0 || JWTDecoder.isUserAdmin(jwtToken: token)) && token != "" && festival.isActive && !isUserAlreadyInTimeslotZone(timeslotAssociation: timeslotVolunteer))
                         .buttonStyle(.borderedProminent)
                         .padding()
 
@@ -141,6 +144,10 @@ struct TimeslotAssociationDetailView: View {
                         do {
                             let nb = try await self.intent.getNbMissingVolunteersInTimeslot(zone: zone, timeslot: timeslotVolunteer)
                             nbMissingVolunteers = nb
+                            let nbVolunteers = try await self.intent.getNbVolunteersTimeslot(id: timeslotVolunteer.timeslot.id)
+                            currentNumber = nbVolunteers
+                            let cap = try await self.intent.getMaxCapacityTimeslot(id: timeslotVolunteer.timeslot.id)
+                            capacity = cap
                         }
                         catch RequestError.serverError{
                             showingAlert = true

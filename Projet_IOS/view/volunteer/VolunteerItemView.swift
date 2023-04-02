@@ -23,9 +23,9 @@ struct VolunteerItemView: View{
                 image.resizable()
                         .frame(width: 80, height: 80)
             },
-                    placeholder: {
-                        ProgressView()
-                    })
+            placeholder: {
+                ProgressView()
+            })
         }
 
     }

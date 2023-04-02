@@ -7,17 +7,17 @@ import Foundation
 class TimeslotVolunteerAssociation: ObservableObject, Hashable, Equatable, Codable {
 
     static func == (lhs: TimeslotVolunteerAssociation, rhs: TimeslotVolunteerAssociation) -> Bool {
-        return lhs.timeslot == rhs.timeslot && lhs.volunteerList == rhs.volunteerList
+        return lhs.timeslot.id == rhs.timeslot.id && lhs.volunteerList == rhs.volunteerList
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(timeslot)
+        hasher.combine(timeslot.id)
     }
 
-    @Published var timeslot : String
-    @Published var volunteerList : [String]
+    @Published var timeslot : Timeslot
+    @Published var volunteerList : [Volunteer]
 
-    init(timeslot: String, volunteerList: [String]) {
+    init(timeslot: Timeslot, volunteerList: [Volunteer]) {
         self.timeslot = timeslot
         self.volunteerList = volunteerList
     }
@@ -30,10 +30,10 @@ class TimeslotVolunteerAssociation: ObservableObject, Hashable, Equatable, Codab
     required init(from decoder: Decoder) throws {
 
         let timeslotContainer = try decoder.container(keyedBy: CodingKeys.self)
-        timeslot = try timeslotContainer.decode(String.self, forKey: .timeslot)
+        timeslot = try timeslotContainer.decode(Timeslot.self, forKey: .timeslot)
 
         let volunteerListContainer = try decoder.container(keyedBy: CodingKeys.self)
-        volunteerList = try volunteerListContainer.decode([String].self, forKey: .volunteerList)
+        volunteerList = try volunteerListContainer.decode([Volunteer].self, forKey: .volunteerList)
     }
 
     func encode(to encoder: Encoder) throws {

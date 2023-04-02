@@ -74,7 +74,6 @@ struct GameListView: View {
                             }
                         }
                         Button("Create Game"){
-                            print("button pressed")
                             Task{
                                 do{
                                     try await self.intent.createGame()

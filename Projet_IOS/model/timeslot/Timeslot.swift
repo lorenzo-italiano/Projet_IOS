@@ -13,14 +13,30 @@ class Timeslot: ObservableObject, Hashable, Equatable, Codable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+    
+    static func stringToISODate(string: String) -> Date?{
+        let formatter = ISO8601DateFormatter()
+        // Insert .withFractionalSeconds to the current format.
+        formatter.formatOptions.insert(.withFractionalSeconds)
+        return formatter.date(from: string)
+    }
+
+    static func dateToISOString(date: Date) -> String {
+        // Create Date Formatter
+        let dateFormatter = ISO8601DateFormatter()
+
+        dateFormatter.formatOptions.insert(.withFractionalSeconds)
+
+        // Convert Date to String
+        return dateFormatter.string(from: date)
+    }
 
     @Published var id: String
     @Published var startDate : String
     @Published var endDate : String
-//    @Published var volunteerList : [Volunteer]
-    @Published var volunteerList : [String]
+    @Published var volunteerList : [Volunteer]
 
-    init(id: String, startDate: String, endDate: String, volunteerList: [String]) {
+    init(id: String, startDate: String, endDate: String, volunteerList: [Volunteer]) {
         self.id = id
         self.startDate = startDate
         self.endDate = endDate
@@ -31,7 +47,7 @@ class Timeslot: ObservableObject, Hashable, Equatable, Codable {
         case id = "_id"
         case startDate = "startDate"
         case endDate = "endDate"
-        case volunteerList = "volunteerList"
+        case volunteerList = "availableVolunteerList"
     }
 
     required init(from decoder: Decoder) throws {
@@ -46,7 +62,7 @@ class Timeslot: ObservableObject, Hashable, Equatable, Codable {
         endDate = try endDateContainer.decode(String.self, forKey: .endDate)
 
         let volunteerListContainer = try decoder.container(keyedBy: CodingKeys.self)
-        volunteerList = try volunteerListContainer.decode([String].self, forKey: .volunteerList)
+        volunteerList = try volunteerListContainer.decode([Volunteer].self, forKey: .volunteerList)
     }
 
     func encode(to encoder: Encoder) throws {

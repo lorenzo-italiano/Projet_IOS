@@ -18,7 +18,7 @@ struct SignUpView: View {
     @State var password: String = ""
     @State var passwordRepeat: String = ""
 
-    @Binding public var tabSelection: Int
+//    @Binding public var tabSelection: Int
 
     var body: some View {
         VStack(alignment: .center){
@@ -53,38 +53,38 @@ struct SignUpView: View {
                     SecureInputView("Mot de passe", text: $passwordRepeat)
                             .padding(8)
                 }
-
-                Button("S'inscrire"){
-                    Task{
-                        do{
-                            try await self.intent.signup(name: name, surname: surname, email: email, password: password, passwordRepeat: passwordRepeat)
-                            showingAlert = true
-                            alertMessage = "Vous avez créé votre compte avec succès !"
-                            tabSelection = 4
-                        }
-                        catch RequestError.badRequest{
-                            showingAlert = true
-                            alertMessage = RequestError.badRequest.description
-                        }
-                        catch RequestError.serverError{
-                            showingAlert = true
-                            alertMessage = RequestError.serverError.description
-                        }
-                        catch RequestError.alreadyExists{
-                            showingAlert = true
-                            alertMessage = RequestError.alreadyExists.description
-                        }
-                        catch {
-                            showingAlert = true
-                            alertMessage = RequestError.unknown.description
-                        }
-                    }
-                }
-                .padding(.all)
                 .alert(alertMessage, isPresented: $showingAlert) {
                     Button("OK", role: .cancel) { }
                 }
             }
+            Button("S'inscrire"){
+                Task{
+                    do{
+                        try await self.intent.signup(name: name, surname: surname, email: email, password: password, passwordRepeat: passwordRepeat)
+                        showingAlert = true
+                        alertMessage = "Vous avez créé votre compte avec succès !"
+//                        tabSelection = 4
+                    }
+                    catch RequestError.badRequest{
+                        showingAlert = true
+                        alertMessage = RequestError.badRequest.description
+                    }
+                    catch RequestError.serverError{
+                        showingAlert = true
+                        alertMessage = RequestError.serverError.description
+                    }
+                    catch RequestError.alreadyExists{
+                        showingAlert = true
+                        alertMessage = RequestError.alreadyExists.description
+                    }
+                    catch {
+                        showingAlert = true
+                        alertMessage = RequestError.unknown.description
+                    }
+                }
+            }
+            .padding(.all)
+            .buttonStyle(.borderedProminent)
         }
     }
 }

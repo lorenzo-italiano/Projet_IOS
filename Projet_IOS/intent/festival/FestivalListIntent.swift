@@ -10,6 +10,7 @@ class FestivalListIntent {
     @ObservedObject private var model : FestivalList
 
     private var festivalDAO = FestivalDAO()
+    private var festivalCreationDAO = FestivalCreationDAO()
 
     init(model: FestivalList){
         self.model = model
@@ -24,6 +25,21 @@ class FestivalListIntent {
         }
         catch{
             throw RequestError.serverError
+        }
+    }
+
+    func create(festival: FestivalCreation) async throws -> Void  {
+        do{
+            try await festivalCreationDAO.create(url: "/festivals", newObject: festival)
+        }
+        catch RequestError.unauthorized{
+            throw RequestError.unauthorized
+        }
+        catch RequestError.serverError{
+            throw RequestError.serverError
+        }
+        catch RequestError.badRequest{
+            throw RequestError.badRequest
         }
     }
 

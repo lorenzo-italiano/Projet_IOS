@@ -13,7 +13,7 @@ class VolunteerList: ObservableObject {
         }
     }
 
-    @Published var state : VolunteerState = .empty {
+    @Published var state : VolunteerListState = .empty {
         didSet{
             if case .loaded(let data) = state {
                 volunteerList = data

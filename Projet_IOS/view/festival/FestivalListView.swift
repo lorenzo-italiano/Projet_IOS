@@ -9,10 +9,13 @@ struct FestivalListView: View {
 
     @ObservedObject public var festivalList: FestivalList
 
+    @AppStorage("token") var token: String = ""
+
     @State private var intent : FestivalListIntent
 
     @State private var showingAlert = false
     @State private var alertMessage: String = ""
+
 
     init(festivalList: FestivalList) {
         self.festivalList = festivalList
@@ -27,34 +30,37 @@ struct FestivalListView: View {
             else{
                 NavigationStack {
                     VStack{
+                        Text("Liste des festivals")
+                                .font(.title)
                         List {
                             ForEach(festivalList.festivalList, id: \.self) { festival in
                                 NavigationLink(destination: FestivalDetailView(festival: festival)){
-                                    Text(festival.name)
+                                    FestivalItemView(festival: festival)
                                 }
                             }
-//                            .onDelete {
-//                                indexSet in
-//                                for index in indexSet{
-//                                    Task{
-//                                        do{
-//                                            try await self.intent.delete(id: self.gameList.gameList[index].id ?? "")
-//                                            try await self.intent.load()
-//                                            showingAlert = true
-//                                            alertMessage = "Vous avez supprimé un jeu !"
-//                                        }
-//                                        catch RequestError.unauthorized{
-//                                            showingAlert = true
-//                                            alertMessage = RequestError.unauthorized.description
-//                                        }
-//                                        catch RequestError.serverError{
-//                                            showingAlert = true
-//                                            alertMessage = RequestError.serverError.description
-//                                        }
-//                                    }
-//
-//                                }
-//                            }
+                            .onDelete {
+                                indexSet in
+                                for index in indexSet{
+                                    Task{
+                                        do{
+                                            try await self.intent.delete(id: self.festivalList.festivalList[index].id ?? "")
+                                            showingAlert = true
+                                            alertMessage = "Vous avez supprimé un festival !"
+                                            festivalList.festivalList.remove(atOffsets: indexSet)
+                                        }
+                                        catch RequestError.unauthorized{
+                                            showingAlert = true
+                                            alertMessage = RequestError.unauthorized.description
+                                        }
+                                        catch RequestError.serverError{
+                                            showingAlert = true
+                                            alertMessage = RequestError.serverError.description
+                                        }
+                                    }
+
+                                }
+                            }
+                            .deleteDisabled(!JWTDecoder.isUserAdmin(jwtToken: token))
                         }
                         .refreshable {
                             Task{
@@ -67,33 +73,11 @@ struct FestivalListView: View {
                                 }
                             }
                         }
-//                        Button("Create Game"){
-//                            print("button pressed")
-//                            Task{
-//                                do{
-//                                    try await self.intent.createGame()
-//                                    try await self.intent.load()
-//                                    showingAlert = true
-//                                    alertMessage = "Vous avez créé un nouveau jeu !"
-//                                }
-//                                catch RequestError.unauthorized{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.unauthorized.description
-//                                }
-//                                catch RequestError.serverError{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.serverError.description
-//                                }
-//                                catch RequestError.alreadyExists{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.alreadyExists.description
-//                                }
-//                                catch RequestError.badRequest{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.badRequest.description
-//                                }
-//                            }
-//                        }
+                        NavigationLink(destination: FestivalCreationView(intent: intent)){
+                            Text("Créer un festival")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .padding(.all)
                     }
                 }
                 .alert(alertMessage, isPresented: $showingAlert) {

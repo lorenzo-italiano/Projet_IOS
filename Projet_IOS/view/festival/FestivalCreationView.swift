@@ -8,6 +8,8 @@ import SwiftUI
 
 struct FestivalCreationView: View {
 
+//    @EnvironmentObject private var tabController: TabController
+
     @State private var intent : FestivalListIntent = FestivalListIntent(model: FestivalList(festivalList: []))
 
     @State private var showingAlert = false
@@ -69,6 +71,7 @@ struct FestivalCreationView: View {
                             showingAlert = true
                             alertMessage = "Vous avez créé un nouveau festival !"
 //                            tabSelection = 0
+//                            tabController.open(.festivals)
                             try await self.intent.getAll()
 
                         } catch RequestError.unauthorized {

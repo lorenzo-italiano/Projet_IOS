@@ -17,7 +17,7 @@ class UserDAO {
         
         let encoded = try! JSONEncoder().encode(mydata)
         
-        var request = URLRequest(url: URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1/auth/login/noencryption")!)
+        var request = URLRequest(url: URL(string:"https://europe-west1-projetios-backend.cloudfunctions.net/app/api/v1/auth/login/noencryption")!)
         
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -28,6 +28,7 @@ class UserDAO {
         let httpresponse = response as! HTTPURLResponse // le bon type
         if (httpresponse.statusCode == 200) { // tout s'est bien passé
             UserDefaults.standard.set(try! JSONDecoder().decode(HttpLoginResponse.self, from: data).token, forKey: "token")
+            print(try! JSONDecoder().decode(HttpLoginResponse.self, from: data).token)
 //            guard let decoded : DTO = await JSONHelper.decode(data: data) else { // utilisation de notre décodeur
 //                return // mauvaise récupération de données
 //            }
@@ -52,7 +53,7 @@ class UserDAO {
 
         let encoded = try! JSONEncoder().encode(mydata)
 
-        var request = URLRequest(url: URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1/auth/sign-up")!)
+        var request = URLRequest(url: URL(string:"https://europe-west1-projetios-backend.cloudfunctions.net/app/api/v1/auth/sign-up")!)
 
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")

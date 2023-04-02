@@ -9,8 +9,23 @@ struct FestivalDetailView: View {
 
     @ObservedObject private var festival: Festival
 
+    @AppStorage("token") var token: String = ""
+
+    @State private var intent : FestivalIntent
+
+    @State private var showingPopover: Bool = false
+
+    @State private var showingAlert = false
+    @State private var alertMessage: String = ""
+
+    @State private var showDeleteAlert = false
+    @State private var deleteAlertMessage: String = "Voulez vous supprimer ce festival ? Attention cette action est irréversible"
+
+    @State private var nbVolunteers: String = ""
+
     init(festival: Festival){
         self.festival = festival
+        self.intent = FestivalIntent(model: self._festival.wrappedValue)
     }
     
     private func getDayOfYear(date: Date) -> Int {
@@ -43,38 +58,95 @@ struct FestivalDetailView: View {
     }
 
     var body: some View {
-        VStack{
-            Text(festival.name)
-            Text("Édition " + String(festival.year))
+        NavigationStack {
+            VStack{
+                Text(festival.name)
+                        .font(.title)
+                Text("Édition " + String(festival.year))
+                        .font(.title)
+            }
+
+            Spacer()
+
+            Text("Ce festival est actif").isVisible(festival.isActive)
+            Text("Ce festival a été cloturé").isVisible(!festival.isActive)
+
             Text("Durée du festival: " + computeNumberOfDays() + " jours")
+            Text("Nombre de bénévoles: " + nbVolunteers)
             NavigationLink {
                 FestivalDayListView(festival: festival)
             } label: {
                 Text("Emploi du temps")
             }
-            .buttonStyle(.borderedProminent)
+                    .buttonStyle(.borderedProminent)
             NavigationLink {
-                ZoneListView(zoneList: ZoneList(zoneList: festival.zoneList))
+                ZoneListView(zoneList: ZoneList(zoneList: festival.zoneList), festival: festival)
             } label: {
                 Text("Voir les zones")
             }
-            .buttonStyle(.borderedProminent)
-
-            NavigationLink {
-                FestivalCreateDayView(festival: festival)
-            } label: {
-                Text("Ajouter une journée")
-            }
-            .buttonStyle(.borderedProminent)
-
-            NavigationLink {
-                FestivalCreateZoneView(festival: festival)
-            } label: {
-                Text("Ajouter une zone")
-            }
                     .buttonStyle(.borderedProminent)
 
+            Spacer()
+
         }
+        .onAppear{
+            Task {
+                do {
+                    let nb = try await self.intent.getNbVolunteersInFestival(festival: festival)
+                    nbVolunteers = nb
+                }
+                catch RequestError.serverError {
+                    showingAlert = true
+                    alertMessage = RequestError.serverError.description
+                }
+            }
+        }
+        .alert(alertMessage, isPresented: $showingAlert) {
+            Button("OK", role: .cancel) { }
+        }
+                .toolbar{
+                    ToolbarItemGroup {
+
+                        Button {
+                            showingPopover.toggle()
+                        } label: {
+                            Image(systemName: "gearshape.fill")
+                        }.isVisible(JWTDecoder.isUserAdmin(jwtToken: token) && !showingPopover)
+
+                        Button {
+                            showDeleteAlert = true
+                        } label: {
+                            Image(systemName: "xmark")
+                        }.isVisible(JWTDecoder.isUserAdmin(jwtToken: token) && !showingPopover)
+
+
+                    }
+                }
+        .confirmationDialog(deleteAlertMessage, isPresented: $showDeleteAlert) {
+            Button("Ok") {
+                Task{
+                    do {
+                        try await self.intent.delete(id: festival.id!)
+                        showingAlert = true
+                        alertMessage = "Vous avez supprimé un festival avec succès"
+                    }
+                    catch RequestError.unauthorized{
+                        showingAlert = true
+                        alertMessage = RequestError.unauthorized.description
+                    }
+                    catch RequestError.serverError{
+                        showingAlert = true
+                        alertMessage = RequestError.serverError.description
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text(deleteAlertMessage)
+        }
+        .popover(isPresented: $showingPopover, content: {
+            FestivalModificationView(festival: festival, showingPopOver: $showingPopover)
+        })
     }
 
 }

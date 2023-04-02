@@ -14,7 +14,6 @@ class Timeslot: ObservableObject, Hashable, Equatable, Codable {
         hasher.combine(id)
     }
     
-    /// TODO refactor avec un guard
     static func stringToISODate(string: String) -> Date?{
         let formatter = ISO8601DateFormatter()
         // Insert .withFractionalSeconds to the current format.

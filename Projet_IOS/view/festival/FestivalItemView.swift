@@ -16,8 +16,7 @@ struct FestivalItemView: View{
 
     var body: some View {
         HStack{
-            Text(festival.name)
-            Text(String(festival.year))
+            Text(festival.name + " " + String(festival.year))
         }
     }
 }

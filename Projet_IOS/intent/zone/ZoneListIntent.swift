@@ -38,4 +38,16 @@ struct ZoneListIntent {
         }
     }
 
+    func delete(zone: Zone, id: String) async throws -> Void {
+        do{
+            try await zoneDAO.delete(url: "/festivals", id: id, zone: zone)
+        }
+        catch RequestError.unauthorized{
+            throw RequestError.unauthorized
+        }
+        catch RequestError.serverError{
+            throw RequestError.serverError
+        }
+    }
+
 }

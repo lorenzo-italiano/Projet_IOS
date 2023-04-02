@@ -9,6 +9,8 @@ struct FestivalListView: View {
 
     @ObservedObject public var festivalList: FestivalList
 
+    @AppStorage("token") var token: String = ""
+
     @State private var intent : FestivalListIntent
 
     @State private var showingAlert = false
@@ -28,34 +30,37 @@ struct FestivalListView: View {
             else{
                 NavigationStack {
                     VStack{
+                        Text("Liste des festivals")
+                                .font(.title)
                         List {
                             ForEach(festivalList.festivalList, id: \.self) { festival in
                                 NavigationLink(destination: FestivalDetailView(festival: festival)){
                                     FestivalItemView(festival: festival)
                                 }
                             }
-//                            .onDelete {
-//                                indexSet in
-//                                for index in indexSet{
-//                                    Task{
-//                                        do{
-//                                            try await self.intent.delete(id: self.gameList.gameList[index].id ?? "")
-//                                            try await self.intent.load()
-//                                            showingAlert = true
-//                                            alertMessage = "Vous avez supprimé un jeu !"
-//                                        }
-//                                        catch RequestError.unauthorized{
-//                                            showingAlert = true
-//                                            alertMessage = RequestError.unauthorized.description
-//                                        }
-//                                        catch RequestError.serverError{
-//                                            showingAlert = true
-//                                            alertMessage = RequestError.serverError.description
-//                                        }
-//                                    }
-//
-//                                }
-//                            }
+                            .onDelete {
+                                indexSet in
+                                for index in indexSet{
+                                    Task{
+                                        do{
+                                            try await self.intent.delete(id: self.festivalList.festivalList[index].id ?? "")
+                                            showingAlert = true
+                                            alertMessage = "Vous avez supprimé un festival !"
+                                            festivalList.festivalList.remove(atOffsets: indexSet)
+                                        }
+                                        catch RequestError.unauthorized{
+                                            showingAlert = true
+                                            alertMessage = RequestError.unauthorized.description
+                                        }
+                                        catch RequestError.serverError{
+                                            showingAlert = true
+                                            alertMessage = RequestError.serverError.description
+                                        }
+                                    }
+
+                                }
+                            }
+                            .deleteDisabled(!JWTDecoder.isUserAdmin(jwtToken: token))
                         }
                         .refreshable {
                             Task{
@@ -72,6 +77,7 @@ struct FestivalListView: View {
                             Text("Créer un festival")
                         }
                         .buttonStyle(.borderedProminent)
+                        .padding(.all)
                     }
                 }
                 .alert(alertMessage, isPresented: $showingAlert) {

@@ -16,6 +16,9 @@ struct FestivalDayDetails: View {
     @State private var showingAlert = false
     @State private var alertMessage: String = ""
 
+    @State private var startHour: String = ""
+    @State private var endHour: String = ""
+
     init(festival: Festival, date: Date){
         self.festival = festival
         self.date = date
@@ -67,14 +70,18 @@ struct FestivalDayDetails: View {
         return dateFormatter.string(from: date) // 9 septembre 2020 à 12:27
     }
 
+    private func getHourString(date: Date) -> String {
+        let DateString = formatDayString(date: date)
+        let HourString = DateString.components(separatedBy: " ")
+
+        return HourString[4]
+    }
+
     private func formatTimeslotString(startDate: Date, endDate: Date) -> String {
-        let startDateString = formatDayString(date: startDate)
-        let startHourString = startDateString.components(separatedBy: " ")
+        let startHourString = getHourString(date: startDate)
+        let endHourString = getHourString(date: endDate)
 
-        let endDateString = formatDayString(date: endDate)
-        let endHourString = endDateString.components(separatedBy: " ")
-
-        return startHourString[4] + " - " + endHourString[4]
+        return startHourString + " - " + endHourString
     }
 
     private func formatDayShortString(date: Date) -> String{
@@ -83,19 +90,42 @@ struct FestivalDayDetails: View {
         return array[0] + " " + array[1] + " " + array[2]
     }
 
+    private func isUserAlreadyAvailable(timeslot: Timeslot) -> Bool {
+        if(token != "") {
+            for volunteer in timeslot.volunteerList {
+                if(volunteer.id == JWTDecoder.decode(jwtToken: token)["userId"]! as! String){
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     var body: some View {
         VStack{
             Text(festival.name + " " + String(festival.year))
             Text("Journée du " + formatDayShortString(date: date))
+            Text("Heure d'ouverture: " + getHourString(date: Timeslot.stringToISODate(string: startHour) ?? Date()))
+            Text("Heure de fermeture: " + getHourString(date: Timeslot.stringToISODate(string: endHour) ?? Date()))
         }
+                .onAppear{
+                    Task{
+                        do{
+                            let start = try await self.intent.getDayStartDate(festival: festival, timeslot: getTimeslotList()[0])
+                            self.startHour = start
+                            let end = try await self.intent.getDayEndDate(festival: festival, timeslot: getTimeslotList()[0])
+                            self.endHour = end
+                        }
+                        catch RequestError.serverError {
+                            showingAlert = true
+                            alertMessage = RequestError.serverError.description
+                        }
+                    }
+                }
         NavigationStack {
             VStack{
                 List {
                     ForEach(getTimeslotList(), id: \.self) { timeslot in
-//                        NavigationLink(destination: Text("placeholder")){
-//                            Text(formatDayString(date: Timeslot.stringToISODate(string: timeslot.startDate)!))
-//                            Text(formatDayString(date: Timeslot.stringToISODate(string: timeslot.endDate)!))
-//                        }
                         HStack{
                             Text(formatTimeslotString(startDate: Timeslot.stringToISODate(string: timeslot.startDate)!, endDate: Timeslot.stringToISODate(string: timeslot.endDate)!))
                             Spacer()
@@ -115,7 +145,26 @@ struct FestivalDayDetails: View {
                                         self.alertMessage = RequestError.serverError.description
                                     }
                                 }
-                            }
+                            }.isVisible(festival.isActive && token != "" && !isUserAlreadyAvailable(timeslot: timeslot))
+
+                            Button("Indisponible"){
+                                Task {
+                                    do {
+                                        try await self.intent.removeUserFromTimeslot(timeslotId: timeslot.id, userId: JWTDecoder.decode(jwtToken: token)["userId"]! as! String)
+                                        self.showingAlert = true
+                                        self.alertMessage = "Vous vous êtes remis indisponible pour un créneau !"
+                                    }
+                                    catch RequestError.unauthorized {
+                                        self.showingAlert = true
+                                        self.alertMessage = RequestError.unauthorized.description
+                                    }
+                                    catch RequestError.serverError {
+                                        self.showingAlert = true
+                                        self.alertMessage = RequestError.serverError.description
+                                    }
+                                }
+                            }.isVisible(festival.isActive && token != "" && isUserAlreadyAvailable(timeslot: timeslot))
+
                         }
                     }
 //                            .onDelete {

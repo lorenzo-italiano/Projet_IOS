@@ -8,14 +8,18 @@ import SwiftUI
 struct ZoneListView: View {
 
     @ObservedObject public var zoneList: ZoneList
+    @ObservedObject public var festival: Festival
 
     @State private var intent : ZoneListIntent
 
     @State private var showingAlert = false
     @State private var alertMessage: String = ""
 
-    init(zoneList: ZoneList) {
+    @AppStorage("token") var token: String = ""
+
+    init(zoneList: ZoneList, festival: Festival) {
         self.zoneList = zoneList
+        self.festival = festival
         self.intent = ZoneListIntent(model: self._zoneList.wrappedValue)
     }
 
@@ -29,90 +33,38 @@ struct ZoneListView: View {
                     VStack{
                         List {
                             ForEach(zoneList.zoneList, id: \.self) { zone in
-                                NavigationLink(destination: ZoneDetailView(zone: zone)){
+                                NavigationLink(destination: ZoneDetailView(zone: zone, festival: festival)){
                                     Text(zone.name)
 //                                    TimeslotItemView(timeslot: timeslot)
                                 }
                             }
-//                            .onDelete {
-//                                indexSet in
-//                                for index in indexSet{
-//                                    Task{
-//                                        do{
-//                                            try await self.intent.delete(id: self.gameList.gameList[index].id ?? "")
-//                                            try await self.intent.load()
-//                                            showingAlert = true
-//                                            alertMessage = "Vous avez supprimé un jeu !"
-//                                        }
-//                                        catch RequestError.unauthorized{
-//                                            showingAlert = true
-//                                            alertMessage = RequestError.unauthorized.description
-//                                        }
-//                                        catch RequestError.serverError{
-//                                            showingAlert = true
-//                                            alertMessage = RequestError.serverError.description
-//                                        }
-//                                    }
-//
-//                                }
-//                            }
+                            .onDelete {
+                                indexSet in
+                                for index in indexSet{
+                                    Task{
+                                        do {
+                                            try await self.intent.delete(zone: self.zoneList.zoneList[index] ?? Zone(id: "", name: "", nbVolunteers: 0, timeslotList: []), id: festival.id!)
+                                            showingAlert = true
+                                            alertMessage = "Vous avez supprimé une zone d'un festival !"
+                                        }
+                                        catch RequestError.unauthorized{
+                                            showingAlert = true
+                                            alertMessage = RequestError.unauthorized.description
+                                        }
+                                        catch RequestError.serverError{
+                                            showingAlert = true
+                                            alertMessage = RequestError.serverError.description
+                                        }
+                                    }
+
+                                }
+                            }.deleteDisabled(!JWTDecoder.isUserAdmin(jwtToken: token))
                         }
-//                        .refreshable {
-//                            Task{
-//                                do{
-//                                    try await self.intent.getAll()
-//                                }
-//                                catch RequestError.serverError{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.serverError.description
-//                                }
-//                            }
-//                        }
-//                        Button("Create Game"){
-//                            print("button pressed")
-//                            Task{
-//                                do{
-//                                    try await self.intent.createGame()
-//                                    try await self.intent.load()
-//                                    showingAlert = true
-//                                    alertMessage = "Vous avez créé un nouveau jeu !"
-//                                }
-//                                catch RequestError.unauthorized{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.unauthorized.description
-//                                }
-//                                catch RequestError.serverError{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.serverError.description
-//                                }
-//                                catch RequestError.alreadyExists{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.alreadyExists.description
-//                                }
-//                                catch RequestError.badRequest{
-//                                    showingAlert = true
-//                                    alertMessage = RequestError.badRequest.description
-//                                }
-//                            }
-//                        }
                     }
                 }
                 .alert(alertMessage, isPresented: $showingAlert) {
                     Button("OK", role: .cancel) { }
                 }
-//                .onAppear{
-//                    if case .empty = zoneList.state{
-//                        Task{
-//                            do{
-//                                try await self.intent.getAll()
-//                            }
-//                            catch RequestError.serverError{
-//                                showingAlert = true
-//                                alertMessage = RequestError.serverError.description
-//                            }
-//                        }
-//                    }
-//                }
             }
         }
     }

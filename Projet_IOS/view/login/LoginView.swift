@@ -10,7 +10,9 @@ import Foundation
 import SwiftUI
 
 struct LoginView: View {
-    
+
+    @EnvironmentObject private var tabController: TabController
+
     private var intent: UserIntent = UserIntent()
     
     @State private var showingAlert = false
@@ -33,41 +35,38 @@ struct LoginView: View {
                     SecureInputView("Mot de passe", text: $password)
                         .padding(.all)
                 }
-                
-                Button("Connexion"){
-                    Task{
-                        do{
-                            try await self.intent.login(email: email, password: password)
-                        }
-                        catch LoginError.userNotFound {
-                            showingAlert = true
-                            alertMessage = LoginError.userNotFound.description
-                        }
-                        catch LoginError.wrongCredentials {
-                            showingAlert = true
-                            alertMessage = LoginError.wrongCredentials.description
-                        }
-                        catch LoginError.serverError {
-                            showingAlert = true
-                            alertMessage = LoginError.serverError.description
-                        }
-                        catch {
-                            showingAlert = true
-                            alertMessage = LoginError.unknown.description
-                        }
-                    }
-                    
-                }
-                .padding(.all)
                 .alert(alertMessage, isPresented: $showingAlert) {
                     Button("OK", role: .cancel) { }
                 }
             }
-            
-            
-            
+
+            Button("Connexion"){
+                Task{
+                    do{
+                        try await self.intent.login(email: email, password: password)
+                        tabController.open(.festivals)
+                    }
+                    catch LoginError.userNotFound {
+                        showingAlert = true
+                        alertMessage = LoginError.userNotFound.description
+                    }
+                    catch LoginError.wrongCredentials {
+                        showingAlert = true
+                        alertMessage = LoginError.wrongCredentials.description
+                    }
+                    catch LoginError.serverError {
+                        showingAlert = true
+                        alertMessage = LoginError.serverError.description
+                    }
+                    catch {
+                        showingAlert = true
+                        alertMessage = LoginError.unknown.description
+                    }
+                }
+            }
+            .padding(.all)
+            .buttonStyle(.borderedProminent)
         }
-        
     }
 
 }

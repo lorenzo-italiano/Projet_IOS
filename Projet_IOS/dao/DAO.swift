@@ -18,7 +18,7 @@ class DAO<T: Codable> {
         
         let encoded = try! JSONEncoder().encode(newObject)
         
-        guard let url = URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1" + url) else {
+        guard let url = URL(string:"https://europe-west1-projetios-backend.cloudfunctions.net/app/api/v1" + url) else {
             throw RequestError.serverError
         }
         
@@ -52,7 +52,8 @@ class DAO<T: Codable> {
     
     public func getAll(url: String) async throws -> [T] {
         do{
-            let (data, _ ) = try await URLSession.shared.data(from: URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1" + url)!)
+            let (data, _ ) = try await URLSession.shared.data(from: URL(string:"https://europe-west1-projetios-backend.cloudfunctions.net/app/api/v1" + url)!)
+
             return JsonHelper.decodeGeneric(data: data)
         }
         catch{
@@ -62,8 +63,7 @@ class DAO<T: Codable> {
 
     public func getById(url: String, id: String) async throws -> T {
         do{
-            let (data, _ ) = try await URLSession.shared.data(from: URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1" + url + "/" + id)!)
-            // TODO replace point d'exclamation with try catch
+            let (data, _ ) = try await URLSession.shared.data(from: URL(string:"https://europe-west1-projetios-backend.cloudfunctions.net/app/api/v1" + url + "/" + id)!)
             return JsonHelper.decodeOne(data: data)!
         }
         catch{
@@ -75,7 +75,7 @@ class DAO<T: Codable> {
         
         let encoded = try! JSONEncoder().encode(updatedObject)
         
-        guard let url = URL(string:"https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1" + url + "/" + id) else {
+        guard let url = URL(string:"https://europe-west1-projetios-backend.cloudfunctions.net/app/api/v1" + url + "/" + id) else {
             throw RequestError.serverError
         }
         
@@ -86,8 +86,8 @@ class DAO<T: Codable> {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.httpMethod = "PUT"
         
-        let (_, response) = try! await URLSession.shared.upload(for: request, from: encoded)
-        
+        let (data, response) = try! await URLSession.shared.upload(for: request, from: encoded)
+
         guard let resp = response as? HTTPURLResponse else {
             throw RequestError.serverError
         }
@@ -109,12 +109,12 @@ class DAO<T: Codable> {
     
     public func delete(url: String, id: String) async throws {
         
-        guard let url = URL(string: "https://us-central1-projetios-backend.cloudfunctions.net/app/api/v1" + url + "/" + id) else {
+        guard let url = URL(string: "https://europe-west1-projetios-backend.cloudfunctions.net/app/api/v1" + url + "/" + id) else {
             throw RequestError.serverError
         }
         
         var request = URLRequest(url: url)
-        
+
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.httpMethod = "DELETE"
         

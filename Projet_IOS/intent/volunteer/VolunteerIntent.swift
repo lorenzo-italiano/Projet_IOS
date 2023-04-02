@@ -30,5 +30,23 @@ struct VolunteerIntent {
             throw RequestError.serverError
         }
     }
+
+    func changePassword(id: String, passwordObject: PasswordChangeObject) async throws {
+        do {
+            try await volunteerDAO.changePassword(id: id, passwordObject: passwordObject)
+        }
+        catch RequestError.serverError {
+            throw RequestError.serverError
+        }
+        catch RequestError.badRequest {
+            throw RequestError.badRequest
+        }
+        catch RequestError.unauthorized {
+            throw RequestError.unauthorized
+        }
+        catch RequestError.unknown {
+            throw RequestError.unknown
+        }
+    }
     
 }

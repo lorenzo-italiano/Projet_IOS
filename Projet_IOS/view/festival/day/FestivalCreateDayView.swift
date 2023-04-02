@@ -14,11 +14,14 @@ struct FestivalCreateDayView: View {
     @State private var showingAlert = false
     @State private var alertMessage: String = ""
 
+    @Binding private var showingPopover: Bool
+
     @State private var startDate = Date()
     @State private var endDate = Date()
 
-    init(festival: Festival){
+    init(festival: Festival, showingPopOver: Binding<Bool>){
         self.festival = festival
+        self._showingPopover = showingPopOver
         self.intent = FestivalIntent(model: self._festival.wrappedValue)
     }
 
@@ -43,12 +46,9 @@ struct FestivalCreateDayView: View {
                     Task {
                         do {
                             try await self.intent.addNewDay(id: festival.id!, day: FestivalDay(startDate: Timeslot.dateToISOString(date: startDate), endDate: Timeslot.dateToISOString(date: endDate)))
-//                            let mydata = FestivalCreation(name: name, year: year, day: FestivalDay(startDate: Timeslot.dateToISOString(date: startDate), endDate: Timeslot.dateToISOString(date: endDate)))
-//                            try await self.intent.create(festival: mydata)
-                            showingAlert = true
-                            alertMessage = "Vous avez ajouté une nouvelle journée !"
-//                            tabSelection = 0
 //                            try await self.intent.getAll()
+                            showingPopover = false
+
                         }
                         catch RequestError.unauthorized {
                             showingAlert = true

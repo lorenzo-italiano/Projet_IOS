@@ -11,6 +11,22 @@ class JWTDecoder {
         return decodeJWTPart(segments[1]) ?? [:]
     }
 
+    static public func isUserAdmin(jwtToken jwt: String) -> Bool {
+        if(jwt == ""){
+            return false
+        }
+
+        let segments = jwt.components(separatedBy: ".")
+        let decoded = decodeJWTPart(segments[1]) ?? [:]
+
+        guard let isAdmin = decoded["isAdmin"] else {
+            return false
+        }
+        
+        return isAdmin as! Bool
+
+    }
+
     static private func base64UrlDecode(_ value: String) -> Data? {
         var base64 = value
                 .replacingOccurrences(of: "-", with: "+")
